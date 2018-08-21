@@ -165,13 +165,16 @@ var keyData = {
 }
 
 var circles = [];	
+var triangles = [];
 
 function onKeyDown(event) {
 	// max point
 	var maxPoint = new Point(view.size.width, view.size.height);
 	var randomPoint = Point.random();
+	var randomPointTri = Point.random();
 	// create a random point
 	var point = maxPoint * randomPoint;
+	var pointTri = maxPoint * randomPointTri;
 	// When a key is pressed, create a circle
 	var newCircle = new Path.Circle(point, 100);
 	// 		if (event.key === "a") {
@@ -181,9 +184,16 @@ function onKeyDown(event) {
 	// 			sound2.play();
 	// 			newCircle.fillColor = 'steelblue';
 	// 		}
+	// Create a triangle shaped path 
 	newCircle.fillColor = keyData[event.key].color;
 	keyData[event.key].sound.play();
 	circles.push(newCircle);
+
+	// triangles
+	var triangle = new Path.RegularPolygon(pointTri, 3, 50);
+	triangle.fillColor = keyData[event.key].color;
+	//triangle.selected = true;
+	triangles.push(triangle);
 }
 
 //	var animatedCircle = new Path.Circle(new Point(300,300), 100);
@@ -200,4 +210,17 @@ function onFrame(event) {
 			i--;
 		}
 	}
+	for(var i = 0; i < triangles.length; i++) {
+		triangles[i].fillColor.hue += 1;
+		triangles[i].scale(.95);
+		triangles[i].rotate(3);
+
+		if (triangles[i].area < 1) {
+			triangles[i].remove();
+			triangles.splice(i,1);
+			// decrement i so the loop doesn't miss elements in an array
+			i--;
+		}
+	}
+
 }
